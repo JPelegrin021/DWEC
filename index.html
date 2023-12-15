@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listado de Tareas Pendientes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 400px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #333;
+        }
+
+        input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            max-width: fit-content;
+            max-height: fit-content;
+        }
+
+        li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #fff;
+        }
+
+        .completada {
+            text-decoration: line-through;
+            color: green;
+        }
+
+        button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            color: #007AFF;
+        }
+
+        button:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Listado de Tareas Pendientes</h1>
+        <input type="text" id="filterInput" placeholder="Filtrar tareas..." onkeyup="filtrarTareas(event)">
+        <input type="text" id="taskInput" placeholder="Agregar tarea..." onkeyup="agregarTarea(event)">
+        <ul id="taskList">
+        </ul>
+    </div>
+    <template id="taskTemplate">
+        <li>
+            <input type="checkbox" onchange="marcarCompletada(this)">
+            <span></span>
+            <button onclick="eliminarTarea(this)">Eliminar</button>
+        </li>
+    </template>
+    <script>
+        const inputTarea = document.getElementById("taskInput");
+        const listaTareas = document.getElementById("taskList");
+        const inputFiltro = document.getElementById("filterInput");
+
+        function agregarTarea(event) {
+            if (event.key === "Enter" && inputTarea.value.trim() !== "") {
+                const textoTarea = inputTarea.value;
+                inputTarea.value = "";
+
+                const taskTemplate = document.getElementById('taskTemplate');
+                const taskClone = taskTemplate.content.cloneNode(true);
+
+                taskClone.querySelector('span').textContent = textoTarea;
+                listaTareas.appendChild(taskClone);
+            }
+        }
+
+        function marcarCompletada(checkbox) {
+            const tarea = checkbox.nextElementSibling;
+            tarea.classList.toggle("completada");
+        }
+
+        function eliminarTarea(boton) {
+            const itemTarea = boton.parentNode;
+            listaTareas.removeChild(itemTarea);
+        }
+
+        function filtrarTareas(event) {
+            const textoFiltro = event.target.value.toLowerCase();
+            const tareas = listaTareas.getElementsByTagName('li');
+            for (let i = 0; i < tareas.length; i++) {
+                const tarea = tareas[i].getElementsByTagName('span')[0];
+                if (tarea.textContent.toLowerCase().indexOf(textoFiltro) > -1) {
+                    tareas[i].style.display = "";
+                } else {
+                    tareas[i].style.display = "none";
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
